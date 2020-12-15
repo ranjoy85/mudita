@@ -1,0 +1,1 @@
+*/15 * * * * curl -X GET https://mudita.rollingarray.co.in/feed/feedsFromSource
