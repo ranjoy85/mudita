@@ -114,4 +114,14 @@ export class FeedService {
 		var filterTitle = title;
 		return await filterTitle.substring(0, title.indexOf('-'));
 	}
+
+	/**
+	 * Extracts meta data from url
+	 * @param sourceUrl 
+	 */
+	async extractMetaDataFromURl(sourceUrl) {
+		var Meta = require('html-metadata-parser');
+		return await Meta.parser(sourceUrl);
+		//return JSON.stringify(result, null, 3);
+	};
 }

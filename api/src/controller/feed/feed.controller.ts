@@ -27,6 +27,12 @@ export class FeedController {
         return res.status(HttpStatus.OK).json(feeds);
     }
 
+    // @Get('/meta')
+    // async getMeta(@Res() res) {
+    //     //const feeds = await this.feedService.extractMetaDataFromURl();
+    //     //return res.status(HttpStatus.OK).json(feeds);
+    // }
+
     /**
      * Gets feed controller
      * @param res 
@@ -49,11 +55,15 @@ export class FeedController {
                     console.log('----------- already exist -----------');
                 }
                 else{
-                    const sentiment = await this.feedService.getNlpScore(element.title[0]);
-                
+                    const meta = await this.feedService.extractMetaDataFromURl(element.link[0]);
+                    
+                    const sentiment = await this.feedService.getNlpScore(meta.og.description);
+                    
                     const addFeedDTO : AddFeedDTO = {
                         guid : guid,
-                        title: await this.feedService.filterTitle(element.title[0]),
+                        title: meta.og.title,
+                        description : meta.og.description,
+                        imageUrl: meta.og.images[0].url,
                         link: element.link[0],
                         pubDate: element.pubDate[0],
                         source: element.source[0]._,
