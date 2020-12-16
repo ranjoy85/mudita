@@ -102,7 +102,7 @@ export class FeedService {
 	 * @returns  
 	 */
 	async getAllNewsFeedsFromSource() {
-		return await this.httpService.get('https://news.google.com/news/rss');
+		return await this.httpService.get('https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en');
 	}
 
 	/**

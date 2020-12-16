@@ -43,6 +43,19 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# Start pm2 process
+pm2 start ecosystem.config.js
+```
+
+## Build app on GCP
+
+```bash
+# development
+$ npm run build
+
+# Start pm2 process
+pm2 start ecosystem.config.js
 ```
 
 ## Test
