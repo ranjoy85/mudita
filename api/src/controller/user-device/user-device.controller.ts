@@ -2,7 +2,7 @@ import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { AddUserDeviceDTO } from 'src/dto/add-user-device.dto';
 import { UserDeviceService } from 'src/service/user-device/user-device.service';
 
-@Controller('userDevice')
+@Controller('/api/userDevice')
 export class UserDeviceController {
     constructor(private userDeviceService: UserDeviceService) { }
 

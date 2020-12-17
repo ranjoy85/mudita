@@ -6,7 +6,7 @@ import * as googleCloudLanguage from '@google-cloud/language';
 import { FeedModule } from 'src/module/feed/feed.module';
 import { FeedModel } from 'src/model/feed.model';
 
-@Controller('feed')
+@Controller('/api/feed')
 export class FeedController {
     constructor(private feedService: FeedService) { }
 
