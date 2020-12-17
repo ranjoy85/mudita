@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FeedModule } from './module/feed/feed.module';
 import { UserDeviceModule } from './module/user-device/user-device.module';
+import { UserDeviceService } from './service/user-device/user-device.service';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { UserDeviceModule } from './module/user-device/user-device.module';
     //prod
     MongooseModule.forRoot('mongodb+srv://mudita:mudita@cluster-0.28abr.mongodb.net/mudita?retryWrites=true&w=majority', { useNewUrlParser: true }),
     FeedModule,
-    UserDeviceModule
+    //UserDeviceModule,
+    //UserDeviceService
   ],
   controllers: [],
   providers: [],

@@ -5,10 +5,15 @@ import * as xml2js from 'xml2js';
 import * as googleCloudLanguage from '@google-cloud/language';
 import { FeedModule } from 'src/module/feed/feed.module';
 import { FeedModel } from 'src/model/feed.model';
+import { UserDeviceModel } from 'src/model/add-user-device.dto';
+import { UserDeviceService } from 'src/service/user-device/user-device.service';
 
 @Controller('/api/feed')
 export class FeedController {
-    constructor(private feedService: FeedService) { }
+    constructor(
+        private feedService: FeedService,
+        private userDeviceService: UserDeviceService
+    ) { }
 
     // add a customer
     @Post('/create')
@@ -73,6 +78,7 @@ export class FeedController {
                     };
 
                     await this.feedService.addFeed(addFeedDTO);
+                    await this.userDeviceService.sendPushToAllDevices(addFeedDTO);
 
                     console.log('guid: '+guid+' added');
                     console.log('----------- added -----------');

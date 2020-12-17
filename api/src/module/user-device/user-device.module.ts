@@ -11,6 +11,7 @@ import { UserDeviceService } from 'src/service/user-device/user-device.service';
         HttpModule
       ],
       controllers: [UserDeviceController],
-      providers: [UserDeviceService]
+      providers: [UserDeviceService],
+      exports: [UserDeviceService]
 })
 export class UserDeviceModule {}

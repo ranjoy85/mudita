@@ -1,13 +1,14 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AddFeedDTO } from 'src/dto/add-feed.dto';
 import { AddUserDeviceDTO } from 'src/dto/add-user-device.dto';
 import { UserDeviceModel } from 'src/model/add-user-device.dto';
 
 @Injectable()
 export class UserDeviceService {
 	constructor(
-		@InjectModel('UserDeviceModel') private readonly feedModel: Model<UserDeviceModel>,
+		@InjectModel('UserDeviceModel') private readonly userDeviceModel: Model<UserDeviceModel>,
 		private httpService: HttpService
 	) { }
 
@@ -17,31 +18,29 @@ export class UserDeviceService {
 	 * @returns feed 
 	 */
 	async addUserDevice(addUserDeviceDTO: AddUserDeviceDTO): Promise<UserDeviceModel> {
-		const newFeed = await new this.feedModel(addUserDeviceDTO);
+		const newFeed = await new this.userDeviceModel(addUserDeviceDTO);
 		return newFeed.save();
 	}
 
-	//
-	async sendPush() {
-		const webpush = require('web-push');
+	async sendPushToAllDevices(addFeedDTO: AddFeedDTO) {
+
+		const webPush = require('web-push');
 
 		const vapidKeys = {
 			"publicKey": "BABVaD-J9FwpvbmT4DgThDa_A4LCMAJoczPqItpEcTq16KRSaMIKyhv6kLBVjcYJVQD2BOgcfrRSzEtA-nOTac8",
 			"privateKey": "RJ64bu9NWz3XrAZU6-RPfHfHQzmC0T8mkiZaXXxDG7s"
 		};
 
-		webpush.setVapidDetails(
+		webPush.setVapidDetails(
 			'mailto:example@yourdomain.org',
 			vapidKeys.publicKey,
 			vapidKeys.privateKey
 		);
 
-
-
 		const notificationPayload = {
 			"notification": {
-				"title": "Angular News",
-				"body": "Newsletter Available!",
+				"title": addFeedDTO.score,
+				"body": addFeedDTO.title,
 				"icon": "assets/main-page-logo-small-hat.png",
 				"vibrate": [100, 50, 100],
 				"data": {
@@ -54,26 +53,35 @@ export class UserDeviceService {
 				}]
 			}
 		};
-		const allSubscriptions = [
-			{
-				"endpoint": "https://fcm.googleapis.com/fcm/send/dVRSvtNjdk8:APA91bHS8c2GZJLUE9pGxe57vhlfn8whseLtU6AUO_HMBFaA1Nf9PcPcOstoU_Mxdz-t7R3lfv0-npTbxFylz1cVUGgCnx7UgiDldFmOHGvZvDAQOBiGI-jjyqguI-NnpkiBAXotTBaM",
-				"expirationTime": null,
-				"keys": {
-					"p256dh": "BM0wZAcoaXLaQdsXLvXscw4OP3IvVL9CzVl3eiJJJBFJToOEbc6mxE2G1-OhIqZN9ajTdYkBrZcdY3NXxizW910",
-					"auth": "jxcm7XRKLJD49A3ADZiXNA"
-				}
-			}
-		];
+
+		const allAllUserDevice = await this.userDeviceModel.find().exec();
+		allAllUserDevice.forEach(async pushSubscription => {
+			return webPush.sendNotification(
+				pushSubscription,
+				JSON.stringify(notificationPayload)
+			  ).catch( error => {
+				  console.log(error.body);
+			  }) ;
+
+		})
+
 		// webpush.sendNotification(subscription, notificationPayload)
 		// 	.catch(error => console.error(error))
 		// };
 
-		Promise.all(allSubscriptions.map(sub => webpush.sendNotification(
-			sub, JSON.stringify(notificationPayload))))
-			.then(() => console.log('a'))
-			.catch(err => {
-				console.error("Error sending notification, reason: ", err);
-
-			});
+		// Promise
+		// 	.all(
+		// 	allAllUserDevice
+		// 		.map
+		// 		(
+		// 			userDeviceModel => webpush.sendNotification(userDeviceModel, JSON.stringify(notificationPayload))
+		// 		)
+		// 	)
+		// 	.then(() => console.log('a'))
+		// 	.catch(
+		// 		err => {
+		// 			console.error("Error sending notification, reason: ", err);
+		// 		}
+		// 	);
 	}
 }

@@ -6,11 +6,10 @@ import { UserDeviceService } from 'src/service/user-device/user-device.service';
 export class UserDeviceController {
     constructor(private userDeviceService: UserDeviceService) { }
 
-    @Get('/push')
-    async getAllFeeds(@Res() res) {
-        const feeds = await this.userDeviceService.sendPush();
-        return res.status(HttpStatus.OK).json(feeds);
-    }
+    // @Get('/push')
+    // async getAllFeeds(@Res() res) {
+    //     return  await this.userDeviceService.sendPushToAllDevices();
+    // }
 
     // add a customer
     @Post('/add')
