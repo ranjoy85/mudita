@@ -15,6 +15,7 @@ export class UserDeviceController {
     // add a customer
     @Post('/add')
     async addCustomer(@Res() res, @Body() addUserDeviceDTO: AddUserDeviceDTO) {
+        console.log(JSON.stringify(addUserDeviceDTO));
         const feed = await this.userDeviceService.addUserDevice(addUserDeviceDTO);
         return res.status(HttpStatus.OK).json({
             message: "User device has been added successfully",
