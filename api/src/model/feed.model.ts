@@ -1,14 +1,11 @@
 import { Document } from 'mongoose';
 
 export interface FeedModel extends Document{
-    guid: string,
-    title: string,
-    description: string,
-    imageUrl: string,
-    link: string,
-    pubDate: string,
-    source: string,
-    score: string,
-    magnitude: string,
+    endpoint ?: string,
+    expirationTime ?: number | null,
+    keys ?: {
+      p256dh ?: string,
+      auth ?: string
+    },
     createdAt : Date
 }

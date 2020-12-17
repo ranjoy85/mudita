@@ -1,8 +1,11 @@
 import * as mongoose from 'mongoose';
 
 export const UserDeviceSchema = new mongoose.Schema({
-    userDeviceType : String,
-    userDeviceId : String,
-    userDeviceStatus : String,
+    endpoint : String,
+    expirationTime : Number,
+    keys : {
+      p256dh : String,
+      auth : String
+    },
     createdAt: { type: Date, default: Date.now }
 })

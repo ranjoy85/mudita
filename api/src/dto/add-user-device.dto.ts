@@ -1,7 +1,10 @@
 
 export interface AddUserDeviceDTO{
-    userDeviceType : string,
-    userDeviceId : string,
-    userDeviceStatus : string,
+    endpoint ?: string,
+    expirationTime ?: number | null,
+    keys ?: {
+      p256dh ?: string,
+      auth ?: string
+    },
     createdAt? : Date
 }
