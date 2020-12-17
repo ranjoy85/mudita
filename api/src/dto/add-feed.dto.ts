@@ -1,5 +1,3 @@
-import { Document } from 'mongoose';
-
 export interface AddFeedDTO{
     guid: string,
     title: string,
