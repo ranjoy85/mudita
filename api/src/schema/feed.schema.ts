@@ -1,11 +1,14 @@
 import * as mongoose from 'mongoose';
 
 export const FeedSchema = new mongoose.Schema({
-    endpoint : String,
-    expirationTime : Number,
-    keys : {
-      p256dh : String,
-      auth : String
-    },
-    createdAt: { type: Date, default: Date.now }
+    guid: String,
+    title: String,
+    description: String,
+    imageUrl: String,
+    link: String,
+    pubDate: String,
+    source: String,
+    score: String,
+    magnitude: String,
+    createdAt : { type: Date, default: Date.now }
 })
