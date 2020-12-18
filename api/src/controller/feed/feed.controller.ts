@@ -78,8 +78,12 @@ export class FeedController {
                     };
 
                     await this.feedService.addFeed(addFeedDTO);
-                    await this.userDeviceService.sendPushToAllDevices(addFeedDTO);
 
+                    //if score is more than 0.1, its a non negative feed, send push
+                    if (sentiment.score >= 0.1){
+                        await this.userDeviceService.sendPushToAllDevices(addFeedDTO);
+                    }
+                    
                     console.log('guid: '+guid+' added');
                     console.log('----------- added -----------');
                 }
