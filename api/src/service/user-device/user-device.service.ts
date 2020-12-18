@@ -32,16 +32,16 @@ export class UserDeviceService {
 		};
 
 		webPush.setVapidDetails(
-			'mailto:example@yourdomain.org',
+			'mailto:support@rollingarray.co.in',
 			vapidKeys.publicKey,
 			vapidKeys.privateKey
 		);
 
 		const notificationPayload = {
 			"notification": {
-				"title": addFeedDTO.score,
+				"title": "A joyful feed to read ...",
 				"body": addFeedDTO.title,
-				"icon": "assets/main-page-logo-small-hat.png",
+				"icon": addFeedDTO.imageUrl,
 				"vibrate": [100, 50, 100],
 				"data": {
 					"dateOfArrival": Date.now(),
@@ -49,7 +49,7 @@ export class UserDeviceService {
 				},
 				"actions": [{
 					"action": "explore",
-					"title": "Go to the site"
+					"title": "Go to the content"
 				}]
 			}
 		};
