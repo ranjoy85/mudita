@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AddFeedDTO } from 'src/dto/add-feed.dto';
 import { FeedModel } from 'src/model/feed.model';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class FeedService {
 	constructor(
 		@InjectModel('FeedModel') private readonly feedModel: Model<FeedModel>,
-		private httpService: HttpService
+		private httpService: HttpService,
+		private loggerService : LoggerService
 	) { }
 
 	/**
@@ -22,7 +24,7 @@ export class FeedService {
 		return await this.feedModel
 			.find(query)
 			.sort(sort)
-			.limit(20)
+			.limit(200)
 			.exec();
 	}
 
@@ -53,8 +55,8 @@ export class FeedService {
 	 * @returns feed 
 	 */
 	async addFeed(addFeedDTO: AddFeedDTO): Promise<FeedModel> {
-		const newFeed = await new this.feedModel(addFeedDTO);
-		return newFeed.save();
+		const newEntity = await new this.feedModel(addFeedDTO);
+		return newEntity.save();
 	}
 
 	/**
@@ -102,7 +104,7 @@ export class FeedService {
 	 * @returns  
 	 */
 	async getAllNewsFeedsFromSource() {
-		return await this.httpService.get('https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en');
+		return await this.httpService.get(process.env.FEED_SOURCE);
 	}
 
 	/**
@@ -120,8 +122,7 @@ export class FeedService {
 	 * @param sourceUrl 
 	 */
 	async extractMetaDataFromURl(sourceUrl) {
-		var Meta = require('html-metadata-parser');
-		return await Meta.parser(sourceUrl);
-		//return JSON.stringify(result, null, 3);
+		const htmlMetadataParser = require('html-metadata-parser');
+		return await htmlMetadataParser.parser(sourceUrl);
 	};
 }

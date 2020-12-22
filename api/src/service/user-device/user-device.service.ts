@@ -3,13 +3,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AddFeedDTO } from 'src/dto/add-feed.dto';
 import { AddUserDeviceDTO } from 'src/dto/add-user-device.dto';
-import { UserDeviceModel } from 'src/model/add-user-device.dto';
+import { UserDeviceModel } from 'src/model/user-device.model';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class UserDeviceService {
+	/**
+	 * Creates an instance of user device service.
+	 * @param userDeviceModel 
+	 * @param httpService 
+	 */
 	constructor(
 		@InjectModel('UserDeviceModel') private readonly userDeviceModel: Model<UserDeviceModel>,
-		private httpService: HttpService
+		private httpService: HttpService,
+		private loggerService : LoggerService
 	) { }
 
 	/**
@@ -22,21 +29,40 @@ export class UserDeviceService {
 		return newFeed.save();
 	}
 
+	/**
+	 * Deletes subscription
+	 * @param addUserDeviceDTO 
+	 * @returns subscription 
+	 */
+	async deleteSubscription(addUserDeviceDTO: AddUserDeviceDTO): Promise<UserDeviceModel> {
+
+		const deleteEntity = await new this.userDeviceModel(addUserDeviceDTO);
+		return deleteEntity.remove();
+	}
+
+	/**
+	 * Sends push to all devices
+	 * @param addFeedDTO 
+	 */
 	async sendPushToAllDevices(addFeedDTO: AddFeedDTO) {
 
+		// initiate webpush
 		const webPush = require('web-push');
 
+		// attach webpush generated vapidkeys 
 		const vapidKeys = {
-			"publicKey": "BABVaD-J9FwpvbmT4DgThDa_A4LCMAJoczPqItpEcTq16KRSaMIKyhv6kLBVjcYJVQD2BOgcfrRSzEtA-nOTac8",
-			"privateKey": "RJ64bu9NWz3XrAZU6-RPfHfHQzmC0T8mkiZaXXxDG7s"
+			"publicKey": process.env.VAPID_PUBLIC_KEY,
+			"privateKey": process.env.VAPID_PRIVATE_KEY
 		};
 
+		// set vapid details
 		webPush.setVapidDetails(
 			'mailto:support@rollingarray.co.in',
 			vapidKeys.publicKey,
 			vapidKeys.privateKey
 		);
 
+		// notification payload
 		const notificationPayload = {
 			"notification": {
 				"title": "A joyful feed to read ...",
@@ -54,34 +80,28 @@ export class UserDeviceService {
 			}
 		};
 
-		const allAllUserDevice = await this.userDeviceModel.find().exec();
-		allAllUserDevice.forEach(async pushSubscription => {
+		// get all user device 
+		const allUserDevice = await this.userDeviceModel.find().exec().catch();
+		
+		// iterate through all the devices
+		allUserDevice.forEach(async pushSubscription => {
+
+			this.loggerService.log(`Sending push to endpoint - ${pushSubscription.endpoint}`);
+
+			// send push
 			return webPush.sendNotification(
 				pushSubscription,
-				JSON.stringify(notificationPayload)
-			  ).catch( error => {
-				  console.log(error.body);
-			  }) ;
-
-		})
-
-		// webpush.sendNotification(subscription, notificationPayload)
-		// 	.catch(error => console.error(error))
-		// };
-
-		// Promise
-		// 	.all(
-		// 	allAllUserDevice
-		// 		.map
-		// 		(
-		// 			userDeviceModel => webpush.sendNotification(userDeviceModel, JSON.stringify(notificationPayload))
-		// 		)
-		// 	)
-		// 	.then(() => console.log('a'))
-		// 	.catch(
-		// 		err => {
-		// 			console.error("Error sending notification, reason: ", err);
-		// 		}
-		// 	);
+			)
+				.catch(async (err) => {
+					if (err.statusCode === 404 || err.statusCode === 410) {
+						
+						return await this.deleteSubscription(pushSubscription)
+									.then(_=> this.loggerService.log(`Push endpoint - ${pushSubscription.endpoint} -  deleted success`))
+									.catch(_=> this.loggerService.log(`Push endpoint - ${pushSubscription.endpoint} -  could not be deleted`));;
+					} else {
+						throw err;
+					}
+				});
+		});
 	}
 }

@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FeedModule } from './module/feed/feed.module';
-import { UserDeviceModule } from './module/user-device/user-device.module';
-import { UserDeviceService } from './service/user-device/user-device.service';
+import { LoggerModule } from './module/logger/logger.module';
+import { LoggerService } from './service/logger/logger.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
+
     //dev
-    //MongooseModule.forRoot('mongodb+srv://mudita-dev:mudita-dev@cluster0.ra4mq.mongodb.net/mudita-dev?retryWrites=true&w=majority', { useNewUrlParser: true }),
+    MongooseModule.forRoot(process.env.MONGODB_URL, { useNewUrlParser: true }),
     
     //prod
-    MongooseModule.forRoot('mongodb+srv://mudita:mudita@cluster-0.28abr.mongodb.net/mudita?retryWrites=true&w=majority', { useNewUrlParser: true }),
+    //MongooseModule.forRoot('mongodb+srv://mudita:mudita@cluster-0.28abr.mongodb.net/mudita?retryWrites=true&w=majority', { useNewUrlParser: true }),
     FeedModule,
+    
+    
+    // SourceModule,
     //UserDeviceModule,
     //UserDeviceService
   ],
