@@ -83,6 +83,7 @@ export class UserDeviceService {
 		// get all user device 
 		const allUserDevice = await this.userDeviceModel.find().exec().catch();
 		
+
 		// iterate through all the devices
 		allUserDevice.forEach(async pushSubscription => {
 
@@ -90,7 +91,7 @@ export class UserDeviceService {
 
 			// send push
 			return webPush.sendNotification(
-				pushSubscription,
+				pushSubscription, JSON.stringify(notificationPayload)
 			)
 				.catch(async (err) => {
 					if (err.statusCode === 404 || err.statusCode === 410) {
@@ -103,5 +104,67 @@ export class UserDeviceService {
 					}
 				});
 		});
+	}
+
+	/**
+	 * Tests push
+	 */
+	async testPush() {
+
+		// initiate webpush
+		const webPush = require('web-push');
+
+		// attach webpush generated vapidkeys 
+		const vapidKeys = {
+			"publicKey": process.env.VAPID_PUBLIC_KEY,
+			"privateKey": process.env.VAPID_PRIVATE_KEY
+		};
+
+		// set vapid details
+		webPush.setVapidDetails(
+			'mailto:support@rollingarray.co.in',
+			vapidKeys.publicKey,
+			vapidKeys.privateKey
+		);
+
+		// notification payload
+		const notificationPayload = {
+			"notification": {
+				"title": "A joyful feed to read ...",
+				"body": 'Test',
+				"icon": '',
+				"vibrate": [100, 50, 100],
+				"data": {
+					"dateOfArrival": Date.now(),
+					"primaryKey": 1
+				},
+				"actions": [{
+					"action": "explore",
+					"title": "Go to the content"
+				}]
+			}
+		};
+
+		// push subscription
+		const pushSubscription = {
+			"endpoint":"https://fcm.googleapis.com/fcm/send/cY7XYvgw2RY:APA91bGnoMkw6_mz_HQxHCCn21g8sVHQ9opgjvhD2J3g4hAyTU0qCvfhe0FnkS4LYliSEUQf0h-VasDqhqLJq_zrZiyha-oC1gi8aqk4d7MX9wH1lR_zh0hyLi2i_YpnMtPPCvB4HE6h",
+			"expirationTime":null,
+			"keys":{
+				"p256dh":"BBRcRdAIOHdBqgbqzfkZHU_CvwGxno8VdNpfl_Kmk3Z7JgV7FLHwub8wIQkMaZjyNRhyziHz6l89WO6_Hp3o-AQ",
+				"auth":"0rHEdPlLJoEV-T6USkIX6g"
+			}
+		}
+
+		// send push
+		webPush.sendNotification(
+			pushSubscription, JSON.stringify(notificationPayload)
+		)
+			.catch(async (err) => {
+				if (err.statusCode === 404 || err.statusCode === 410) {
+					// delete push in db
+				} else {
+					throw err;
+				}
+			});
 	}
 }
