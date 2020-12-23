@@ -18,13 +18,13 @@ export class FeedService {
 	 * @returns all feed 
 	 */
 	async getAllFeed(date): Promise<FeedModel[]> {
-		var d = new Date();
+		var d = new Date(date);
 		let query = { createdAt: { $lte: d } };
 		let sort = { createdAt: 'desc' };
 		return await this.feedModel
 			.find(query)
 			.sort(sort)
-			.limit(200)
+			.limit(12)
 			.exec();
 	}
 

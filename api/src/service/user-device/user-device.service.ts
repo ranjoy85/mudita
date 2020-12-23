@@ -110,7 +110,7 @@ export class UserDeviceService {
 	 * Tests push
 	 */
 	async testPush() {
-
+		console.log('/api/userDevice/testPush');
 		// initiate webpush
 		const webPush = require('web-push');
 
@@ -146,20 +146,14 @@ export class UserDeviceService {
 		};
 
 		// push subscription
-		const pushSubscription = {
-			"endpoint":"https://fcm.googleapis.com/fcm/send/cY7XYvgw2RY:APA91bGnoMkw6_mz_HQxHCCn21g8sVHQ9opgjvhD2J3g4hAyTU0qCvfhe0FnkS4LYliSEUQf0h-VasDqhqLJq_zrZiyha-oC1gi8aqk4d7MX9wH1lR_zh0hyLi2i_YpnMtPPCvB4HE6h",
-			"expirationTime":null,
-			"keys":{
-				"p256dh":"BBRcRdAIOHdBqgbqzfkZHU_CvwGxno8VdNpfl_Kmk3Z7JgV7FLHwub8wIQkMaZjyNRhyziHz6l89WO6_Hp3o-AQ",
-				"auth":"0rHEdPlLJoEV-T6USkIX6g"
-			}
-		}
+		const pushSubscription = {"endpoint":"https://fcm.googleapis.com/fcm/send/dUK_6oD6qrE:APA91bEDNsL12Mr-TJuxB9-TzjP2CxChtlnyxNbozhKJ5kGWshrtNxsw0-pTu9xvvTUR7rtlhOamu0vAModO_ow-8GfJI9PHYT1RV2RX44RqRjxPJVuCP6HHiMD7NqGmywPeMCmkRX_z","expirationTime":null,"keys":{"p256dh":"BFAcM6e-zYmt26tGI-10HB5Fy1-8Ha9GUvDySHJuHYXmknAAhHvQOVJyK9VcBHdLKNfjHvWbFPJEv2-_qgGVkaU","auth":"-7RXuKQ5t21FRSkE4mlryw"}};
 
 		// send push
 		webPush.sendNotification(
 			pushSubscription, JSON.stringify(notificationPayload)
 		)
 			.catch(async (err) => {
+				console.log(err);
 				if (err.statusCode === 404 || err.statusCode === 410) {
 					// delete push in db
 				} else {
