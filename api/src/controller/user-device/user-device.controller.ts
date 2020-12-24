@@ -38,7 +38,7 @@ export class UserDeviceController {
      */
     @Get('/testPush')
     async testPushNotification(@Res() res){
-        this.userDeviceService.testPush();
+        //this.userDeviceService.testPush();
         return res.status(HttpStatus.OK).json({
             message: "Push sent successfully",
         })

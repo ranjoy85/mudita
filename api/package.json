@@ -19,10 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "clean": "rm -rf node_modules",
-    "reinstall": "npm run clean && npm install",
-    "rebuild": "npm run clean && npm install && npm run build",
-    "pm2": "npm run clean && npm install && npm run build && pm2 start ecosystem.config.js"
+    "clean": "sudo rm -rf node_modules",
+    "reinstall": "sudo npm run clean && sudo npm install",
+    "rebuild": "sudo npm run clean && sudo npm install && sudo npm run build",
+    "pm2": "sudo npm run clean && sudo npm install && sudo npm run build && sudo pm2 start ecosystem.config.js"
   },
   "dependencies": {
     "@google-cloud/language": "^4.2.1",
