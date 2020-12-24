@@ -18,7 +18,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "clean": "rm -rf node_modules",
+    "reinstall": "npm run clean && npm install",
+    "rebuild": "npm run clean && npm install && npm run build",
+    "pm2": "npm run clean && npm install && npm run build && pm2 start ecosystem.config.js"
   },
   "dependencies": {
     "@google-cloud/language": "^4.2.1",
@@ -28,7 +32,7 @@
     "@nestjs/mongoose": "^7.2.0",
     "@nestjs/platform-express": "^7.5.1",
     "get-website-favicon": "0.0.7",
-    "html-metadata-parser": "^1.0.3",
+    "meta-extractor": "^2.0.0",
     "mongoose": "^5.11.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

@@ -107,58 +107,19 @@ export class UserDeviceService {
 	}
 
 	/**
-	 * Tests push
+	 * Sends push notifications
+	 * @param sentiment 
+	 * @param addFeedDTO 
 	 */
-	async testPush() {
-		console.log('/api/userDevice/testPush');
-		// initiate webpush
-		const webPush = require('web-push');
+	async sendPushNotifications(sentiment: any, addFeedDTO: AddFeedDTO) {
+		// check if score is more than 0.1, its a non negative feed, send push
 
-		// attach webpush generated vapidkeys 
-		const vapidKeys = {
-			"publicKey": process.env.VAPID_PUBLIC_KEY,
-			"privateKey": process.env.VAPID_PRIVATE_KEY
-		};
-
-		// set vapid details
-		webPush.setVapidDetails(
-			'mailto:support@rollingarray.co.in',
-			vapidKeys.publicKey,
-			vapidKeys.privateKey
-		);
-
-		// notification payload
-		const notificationPayload = {
-			"notification": {
-				"title": "A joyful feed to read ...",
-				"body": 'Test',
-				"icon": '',
-				"vibrate": [100, 50, 100],
-				"data": {
-					"dateOfArrival": Date.now(),
-					"primaryKey": 1
-				},
-				"actions": [{
-					"action": "explore",
-					"title": "Go to the content"
-				}]
-			}
-		};
-
-		// push subscription
-		const pushSubscription = {"endpoint":"https://fcm.googleapis.com/fcm/send/dUK_6oD6qrE:APA91bEDNsL12Mr-TJuxB9-TzjP2CxChtlnyxNbozhKJ5kGWshrtNxsw0-pTu9xvvTUR7rtlhOamu0vAModO_ow-8GfJI9PHYT1RV2RX44RqRjxPJVuCP6HHiMD7NqGmywPeMCmkRX_z","expirationTime":null,"keys":{"p256dh":"BFAcM6e-zYmt26tGI-10HB5Fy1-8Ha9GUvDySHJuHYXmknAAhHvQOVJyK9VcBHdLKNfjHvWbFPJEv2-_qgGVkaU","auth":"-7RXuKQ5t21FRSkE4mlryw"}};
-
-		// send push
-		webPush.sendNotification(
-			pushSubscription, JSON.stringify(notificationPayload)
-		)
-			.catch(async (err) => {
-				console.log(err);
-				if (err.statusCode === 404 || err.statusCode === 410) {
-					// delete push in db
-				} else {
-					throw err;
-				}
-			});
+		const sentimentThreshold = 0.1;
+		if (sentiment.score >= sentimentThreshold) {
+	
+			//send push notification
+			await this.sendPushToAllDevices(addFeedDTO)
+				.catch();
+		}
 	}
 }

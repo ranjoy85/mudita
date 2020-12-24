@@ -6,6 +6,8 @@ export interface AddFeedDTO{
     link: string,
     pubDate: string,
     source: string,
+    twitterHandle?: string,
+    Keywords?: string,
     score: string,
     magnitude: string,
     createdAt? : Date

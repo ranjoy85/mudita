@@ -6,6 +6,8 @@ export const FeedSchema = new mongoose.Schema({
     description: String,
     imageUrl: String,
     link: String,
+    twitterHandle: String,
+    Keywords: String,
     pubDate: String,
     source: String,
     score: String,

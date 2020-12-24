@@ -208,3 +208,9 @@ certbot renew --dry-run
 ```
 
 Now visit https://yourdomain.com and you should see your Node app
+
+cd /var
+sudo rm -r www
+cd /home/ranjoy_sen85
+
+sudo cp -avr www /var/
