@@ -4,6 +4,7 @@ import { FeedController } from 'src/controller/feed/feed.controller';
 import { FeedSchema } from 'src/schema/feed.schema';
 import { FeedService } from 'src/service/feed/feed.service';
 import { LoggerModule } from '../logger/logger.module';
+import { SentimentOverTimeModule } from '../sentiment-over-time/sentiment-over-time.module';
 import { SourceModule } from '../source/source.module';
 import { UserDeviceModule } from '../user-device/user-device.module';
 
@@ -13,7 +14,8 @@ import { UserDeviceModule } from '../user-device/user-device.module';
 		HttpModule,
 		UserDeviceModule,
 		SourceModule,
-		LoggerModule
+		LoggerModule,
+		SentimentOverTimeModule
 	],
 	controllers: [FeedController],
 	providers: [FeedService],

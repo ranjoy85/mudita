@@ -6,7 +6,7 @@ export interface FeedModel extends Document{
     description: string,
     imageUrl: string,
     link: string,
-    pubDate: string,
+    pubDate: Date,
     source: string,
     score: string,
     magnitude: string,

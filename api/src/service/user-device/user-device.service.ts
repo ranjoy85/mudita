@@ -85,8 +85,7 @@ export class UserDeviceService {
 		
 
 		// iterate through all the devices
-		allUserDevice.forEach(async pushSubscription => {
-
+		for await (const pushSubscription of allUserDevice) {
 			this.loggerService.log(`Sending push to endpoint - ${pushSubscription.endpoint}`);
 
 			// send push
@@ -103,7 +102,7 @@ export class UserDeviceService {
 						throw err;
 					}
 				});
-		});
+		}
 	}
 
 	/**

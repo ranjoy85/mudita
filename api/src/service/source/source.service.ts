@@ -72,5 +72,24 @@ export class SourceService {
                 .then(_ => this.loggerService.log(`Source - ${addFeedDTO.source} -  added`))
                 .catch(_ => this.loggerService.log(`Source - ${addFeedDTO.source} -  already exist`));
         }
-    }
+	}
+	
+	/**
+	 * Saves source if not exist
+	 * @param source 
+	 * @param addFeedDTO 
+	 */
+	async saveSourceIfNotExist(source: string, addFeedDTO: AddFeedDTO) {
+		// check if source exist
+		const getIfSourceExist = await this.getIfSourceExist(source);
+
+		if (getIfSourceExist) {
+			this.loggerService.log(`Source - ${addFeedDTO.source} - already exist`);
+		}
+		else {
+
+			// save page source
+			await this.saveFeedSource(addFeedDTO);
+		}
+	}
 }

@@ -8,7 +8,7 @@ export const FeedSchema = new mongoose.Schema({
     link: String,
     twitterHandle: String,
     Keywords: String,
-    pubDate: String,
+    pubDate: { type: Date},
     source: String,
     score: String,
     magnitude: String,

@@ -4,7 +4,7 @@ export interface AddFeedDTO{
     description: string,
     imageUrl: string,
     link: string,
-    pubDate: string,
+    pubDate: Date,
     source: string,
     twitterHandle?: string,
     Keywords?: string,
